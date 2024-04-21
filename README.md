@@ -279,6 +279,7 @@ Terraform outputs:
     systemctl restart nginx
     systemctl status nginx
 
+ 
 
     systemctl daemon-reload
     chown -R prometheus:prometheus /var/log/nginx/access.log
