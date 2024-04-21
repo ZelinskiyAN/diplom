@@ -279,8 +279,6 @@ Terraform outputs:
     systemctl restart nginx
     systemctl status nginx
 
- 
-
     systemctl daemon-reload
     chown -R prometheus:prometheus /var/log/nginx/access.log
     systemctl restart prometheus-nginxlog-exporter
@@ -290,15 +288,29 @@ Terraform outputs:
 
 ![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/c91c52b1-f6d1-4bdc-9e82-0aacfc29ab11)
 
+Переходим в интерфейс prometheus в браузере:
 
+[Targets prometheus](http://158.160.121.254:9090/targets?search=)
 
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/1feb1645-e140-45cf-978d-a8702b1837a4)
 
+### Cтавим grafana на ВМ graf_4
 
+Подключаемся по ssh и вводим команды:
 
+    sudo -i
+    apt-get install -y adduser libfontconfig1 musl
+    wget https://dl.grafana.com/oss/release/grafana_10.1.5_amd64.deb
+    dpkg -i grafana_10.1.5_amd64.deb
+    systemctl enable grafana-server
+    systemctl start grafana-server
+    systemctl status grafana-server
 
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/98fa835a-bc4a-48ba-8153-8ce020db0805)
 
+Переходим в интерфейс grafana в браузере:
 
-
+[Интерфейс grafana](http://84.201.132.243:3000/d/rYdddlPWk/grafana?orgId=1&refresh=1m&var-datasource=default&var-job=prometheus&var-node=192.168.10.33:9100&var-diskdevices=%5Ba-z%5D%2B%7Cnvme%5B0-9%5D%2Bn%5B0-9%5D%2B%7Cmmcblk%5B0-9%5D%2B)
 
 
 
