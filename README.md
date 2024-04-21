@@ -115,14 +115,6 @@ Cоздайте ВМ, разверните на ней Elasticsearch. Устан
 
 Создаю файл main.tf с учетом условий:
 
-_Создайте Target Group, включите в неё две созданных ВМ._
-
-_Создайте Backend Group, настройте backends на target group, ранее созданную. Настройте healthcheck на корень (/) и порт 80, протокол HTTP._
-
-_Создайте HTTP router. Путь укажите — /, backend group — созданную ранее._
-
-_Создайте Application load balancer для распределения трафика на веб-сервера, созданные ранее. Укажите HTTP router, созданный ранее, задайте listener тип auto, порт 80._
-
 [main.tf](https://github.com/ZelinskiyAN/diplom/blob/main/img/main.tf)
 
 Выполнив команду terraform apply создаем веб-сервера web_1 и web_2, а также остальные необходимые ресурсы на Ubuntu 22.04 LTS.
