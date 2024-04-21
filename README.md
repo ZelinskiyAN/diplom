@@ -1,3 +1,4 @@
+[решение](#anchor)
 
 #  Дипломная работа по профессии «Системный администратор»
 
@@ -106,6 +107,8 @@ Cоздайте ВМ, разверните на ней Elasticsearch. Устан
 
 ---
 
+<a id="anchor"></a>
+
 # Решение
 
 ## 1. Создание виртуальных машин.
@@ -126,6 +129,7 @@ _Создайте Application load balancer для распределения т
 
 ![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/e09347f0-9342-4452-af4d-f593294ddd70)
 
+Terraform outputs:
 
 [external_ip_address_bast_7 = "178.154.220.115"](http://178.154.220.115)
 
