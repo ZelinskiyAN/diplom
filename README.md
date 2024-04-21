@@ -127,7 +127,7 @@ _Создайте Application load balancer для распределения т
 ![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/0ac96bf5-0bc6-4b33-98c5-2cd1c0de19f5)
 
 
-[external_ip_address_bast_7 = "178.154.220.115"](178.154.220.115)
+[external_ip_address_bast_7 = "178.154.220.115"](http://178.154.220.115)
 external_ip_address_elas_5 = "51.250.13.221"
 external_ip_address_graf_4 = "84.201.132.243"
 external_ip_address_kib_6 = "51.250.65.29"
