@@ -111,7 +111,7 @@ Cоздайте ВМ, разверните на ней Elasticsearch. Устан
 
 # Решение
 
-## 1. Создание виртуальных машин.
+## Создание виртуальных машин.
 
 Создаю файл main.tf с учетом условий:
 
@@ -248,7 +248,54 @@ Terraform outputs:
     systemctl status node-exporter
 
 ![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/d3921773-90bd-408e-b0dd-4f883d8a50f9)
+
 ![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/f910f6a5-1ffa-4432-a80e-6421dff1556a)
+
+### Ставим prometheus-nginxlog-exporter web-сервера web_1 и web_2
+
+Подключаемся к web-сервера по ssh и вводим команды:
+
+    sudo -i
+    wget https://github.com/martin-helmich/prometheus-nginxlog-exporter/releases/download/v1.9.2/prometheus-nginxlog-exporter_1.9.2_linux_amd64.deb
+    apt install ./prometheus-nginxlog-exporter_1.9.2_linux_amd64.deb
+    wget -O /etc/systemd/system/prometheus-nginxlog-exporter.service https://raw.githubusercontent.com/martin-helmich/prometheus-nginxlog-exporter/master/res/package/prometheus-nginxlog-exporter.service
+    nano /etc/systemd/system/prometheus-nginxlog-exporter.service
+
+[prometheus-nginxlog-exporter.service](https://github.com/ZelinskiyAN/diplom/blob/main/img/prometheus-nginxlog-exporter.service)
+
+Правим конфиг nginx.conf:
+
+    nano /etc/nginx/nginx.conf
+
+[nginx.conf](https://github.com/ZelinskiyAN/diplom/blob/main/img/nginx.conf)
+
+Правим конфиг myapp.conf:
+
+    rm -rf /etc/nginx/sites-enabled/default
+    nano /etc/nginx/conf.d/myapp.conf
+
+[myapp.conf](https://github.com/ZelinskiyAN/diplom/blob/main/img/myapp.conf)
+
+    systemctl restart nginx
+    systemctl status nginx
+
+
+    systemctl daemon-reload
+    chown -R prometheus:prometheus /var/log/nginx/access.log
+    systemctl restart prometheus-nginxlog-exporter
+    systemctl status prometheus-nginxlog-exporter
+
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/9b78b41d-719a-405a-b48f-e5ea7271219e)
+
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/c91c52b1-f6d1-4bdc-9e82-0aacfc29ab11)
+
+
+
+
+
+
+
+
 
 
 
