@@ -112,13 +112,33 @@ Cоздайте ВМ, разверните на ней Elasticsearch. Устан
 
 Создаю файл main.tf с учетом условий:
 
-Создайте Target Group, включите в неё две созданных ВМ.
+_Создайте Target Group, включите в неё две созданных ВМ._
 
-Создайте Backend Group, настройте backends на target group, ранее созданную. Настройте healthcheck на корень (/) и порт 80, протокол HTTP.
+_Создайте Backend Group, настройте backends на target group, ранее созданную. Настройте healthcheck на корень (/) и порт 80, протокол HTTP._
 
-Создайте HTTP router. Путь укажите — /, backend group — созданную ранее.
+_Создайте HTTP router. Путь укажите — /, backend group — созданную ранее._
 
-Создайте Application load balancer для распределения трафика на веб-сервера, созданные ранее. Укажите HTTP router, созданный ранее, задайте listener тип auto, порт 80.
+_Создайте Application load balancer для распределения трафика на веб-сервера, созданные ранее. Укажите HTTP router, созданный ранее, задайте listener тип auto, порт 80._
 
 [main.tf](https://github.com/ZelinskiyAN/diplom/blob/main/img/main.tf)
 
+Выполнив команду terraform apply создаем веб-сервера web_1 и web_2, а также остальные необходимые ресурсы на Ubuntu 22.04 LTS.
+
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/0ac96bf5-0bc6-4b33-98c5-2cd1c0de19f5)
+
+
+[external_ip_address_bast_7 = "178.154.220.115"](178.154.220.115)
+external_ip_address_elas_5 = "51.250.13.221"
+external_ip_address_graf_4 = "84.201.132.243"
+external_ip_address_kib_6 = "51.250.65.29"
+external_ip_address_l7 = "158.160.152.157"
+external_ip_address_prom_3 = "158.160.121.254"
+external_ip_address_web_1 = "158.160.96.189"
+external_ip_address_web_2 = "62.84.122.148"
+internal_ip_address_bast_7 = "192.168.10.37"
+internal_ip_address_elas_5 = "192.168.10.6"
+internal_ip_address_graf_4 = "192.168.10.21"
+internal_ip_address_kib_6 = "192.168.10.7"
+internal_ip_address_prom_3 = "192.168.10.5"
+internal_ip_address_web_1 = "192.168.10.33"
+internal_ip_address_web_2 = "192.168.20.12"
