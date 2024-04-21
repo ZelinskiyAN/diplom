@@ -488,7 +488,6 @@ elas_5.
 
 ![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/8685a1bb-3e54-4b46-8560-81b6bf6acc9b)
 
-Присваиваем его всем дискам:
 
 
 
