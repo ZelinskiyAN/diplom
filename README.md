@@ -226,7 +226,7 @@ Terraform outputs:
 
 Переходим в интерфейс prometheus в браузере:
 
-### Ставим node-exporter на web-сервера web_1 и web_2
+### Ставим node-exporter на web-сервера web_1 и web_2.
 
 Подключаемся к web-сервера по ssh и вводим команды:
 
@@ -312,13 +312,183 @@ Terraform outputs:
 
 [Интерфейс grafana](http://84.201.132.243:3000/d/rYdddlPWk/grafana?orgId=1&refresh=1m&var-datasource=default&var-job=prometheus&var-node=192.168.10.33:9100&var-diskdevices=%5Ba-z%5D%2B%7Cnvme%5B0-9%5D%2Bn%5B0-9%5D%2B%7Cmmcblk%5B0-9%5D%2B)
 
+логин: admin
+
+пароль: admin
+
+Настраиваем привязку ресурсов и дашборды в grafana.
+
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/bd92d87f-2747-4468-a67e-7b2dc13bddcf)
+
+## Устройство логирования посредством elasticsearch, kibana, filebeat.
+
+### Логи
+
+Cтавим Elasticsearch на ВМ elas_5
+
+Подключаемся по ssh и вводим команды:
+
+    sudo -i
+    apt update && apt install gnupg apt-transport-https
+    wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+    echo "deb [trusted=yes] https://mirror.yandex.ru/mirrors/elastic/7/ stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list
+    apt update && apt-get install elasticsearch
+    systemctl daemon-reload
+    systemctl enable elasticsearch.service
+    systemctl start elasticsearch.service
+    systemctl status elasticsearch.service
+
+Правим конфиг elasticsearch.yml:
+
+    nano /etc/elasticsearch/elasticsearch.yml
+
+[elasticsearch.yml](https://github.com/ZelinskiyAN/diplom/blob/main/img/elasticsearch.yml)
+
+    systemctl restart elasticsearch.service
+    systemctl status elasticsearch.service
+
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/043e9e66-e5bb-416f-9921-afb42fb4f794)
+
+    curl 'localhost:9200/_cluster/health?pretty'
+
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/fb51604c-3198-4fba-9b86-4afc6de7f58a)
+
+### Cтавим kibana на ВМ kib_6
+
+Подключаемся по ssh и вводим команды:
+
+    sudo -i
+    apt update && apt install gnupg apt-transport-https
+    wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+    echo "deb [trusted=yes] https://mirror.yandex.ru/mirrors/elastic/7/ stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list
+    apt update && apt-get install kibana
+    systemctl daemon-reload
+    systemctl enable kibana.service
+    systemctl start kibana.service
+    systemctl status kibana.service
+
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/185959a4-1119-4ff5-9b7e-4a17e259718b)
+
+Правим конфиг kibana.yml:
+
+    nano /etc/kibana/kibana.yml
+
+[kibana.yml](https://github.com/ZelinskiyAN/diplom/blob/main/img/kibana.yml)
+
+    systemctl restart kibana.service
+    systemctl status kibana.service
+
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/b9050f4f-e936-48c6-b15f-5cd8a9653c40)
+
+В браузере вводим:
+
+[http://51.250.65.29:5601/app/dev_tools#/console](http://51.250.65.29:5601/app/dev_tools#/console)
+
+Делаем запрос к Эластику:
+
+GET /_cluster/health?pretty
+
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/29771303-fce9-4b06-a5de-a6e8d2e6cd7e)
+
+### Cтавим filebeat web-сервера web_1 и web_2
+
+Подключаемся к web-сервера по ssh и вводим команды:
+
+    sudo -i
+    apt update && apt install gnupg apt-transport-https
+    wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+    echo "deb [trusted=yes] https://mirror.yandex.ru/mirrors/elastic/7/ stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list
+    apt update && apt-get install filebeat
+    systemctl daemon-reload
+    systemctl enable filebeat.service
+    systemctl start filebeat.service
+    systemctl status filebeat.service
+
+Правим конфиг filebeat.yml:
+
+[filebeat.yml](https://github.com/ZelinskiyAN/diplom/blob/main/img/filebeat.yml)
+
+    systemctl restart filebeat.service
+    systemctl status filebeat.service
+
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/6b2e1e04-dff2-4c11-aacd-06faf3c8af51)
+
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/9ff1d2c3-1365-4b3d-860d-4120c486e49d)
+
+В браузере вводим:
+
+[http://51.250.65.29:5601/app/discover](http://51.250.65.29:5601/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-15m,to:now))&_a=(columns:!(),filters:!(),index:'46a44210-ff5f-11ee-88ed-857d018b60d6',interval:auto,query:(language:kuery,query:''),sort:!(!('@timestamp',desc))))
+
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/ed21b407-170c-4cda-ae02-1c53893e8d2e)
+
+# Устройство Сети.
+
+Настраиваем в Yandex.Cloud правила групп безопасности
+
+## SSH security group
+
+группа для бастион-хоста
+
+Назначена ВМ - bast_7.
+
+Правила входящего трафика:
+
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/8a72ca62-d24e-4f9c-848c-91f6f7839085)
+
+Правила исходящего трафика:
+
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/2a5af72a-1a3d-4ef0-be28-fd430bec9e43)
 
 
+## Open security group
 
+группа для доступа извне к Grafana, Kibana, application load balancer по 80 порту.
 
+Назначена для ВМ:
 
+graf_4;
 
+kib_6;
 
+Application Load Balancer.
+
+Правила входящего трафика:
+
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/8a06c51a-4fdf-48d8-8ff8-11f4a3e0c545)
+
+Правила исходящего трафика:
+
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/9f556d2c-acdd-4805-8c43-352d5aae31d6)
+
+## Private security group
+
+группа для скрытия Web, Prometheus, application load balancer.
+
+Назначена для ВМ:
+
+web_1;
+
+web_2;
+
+prom_3;
+
+elas_5.
+
+Правила входящего трафика:
+
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/f22c4f36-6f17-4e93-9f3c-9909869060e9)
+
+Правила исходящего трафика:
+
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/4a98ccff-8098-49df-9d03-c77cd922f41c)
+
+# Устройство резервного копирования.
+
+## Настраиваем в Yandex.Cloud правила резервного копирования
+
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/8685a1bb-3e54-4b46-8560-81b6bf6acc9b)
+
+Присваиваем его всем дискам:
 
 
 
