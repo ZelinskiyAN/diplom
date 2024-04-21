@@ -113,7 +113,7 @@ Cоздайте ВМ, разверните на ней Elasticsearch. Устан
 
 ## 1. Создание виртуальных машин.
 
-Создаю файл [main.tf](https://github.com/ZelinskiyAN/diplom/blob/main/img/main.tf) с учетом условий:
+Создаю файл main.tf с учетом условий:
 
 _Создайте Target Group, включите в неё две созданных ВМ._
 
@@ -187,7 +187,7 @@ Terraform outputs:
 
 Вводим команды:
 
-    ssh user@158.160.125.19 -i id_rsa
+    ssh user@158.160.121.254
     sudo -i
     useradd --no-create-home --shell /bin/false prometheus
     wget https://github.com/prometheus/prometheus/releases/download/v2.47.1/prometheus-2.47.1.linux-amd64.tar.gz
@@ -213,12 +213,51 @@ Terraform outputs:
 
 ![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/84e5340c-ca98-4117-8c22-18fa488cba92)
 
-Правим конфиг [prometheus.yml](https://github.com/ZelinskiyAN/diplom/blob/main/img/prometheus.yml):
+Правим конфиг prometheus.yml:
 
     nano /etc/prometheus/prometheus.yml
 
+[prometheus.yml](https://github.com/ZelinskiyAN/diplom/blob/main/img/prometheus.yml)
+
     systemctl restart prometheus
     systemctl status prometheus
+
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/05034400-7c42-4ab9-8c6b-0b220060bf10)
+
+Переходим в интерфейс prometheus в браузере:
+
+### Ставим node-exporter на web-сервера web_1 и web_2
+
+Подключаемся к web-сервера по ssh и вводим команды:
+
+    sudo -i
+    sudo useradd --no-create-home --shell /bin/false prometheus
+    wget https://github.com/prometheus/node_exporter/releases/download/v1.6.1/node_exporter-1.6.1.linux-amd64.tar.gz
+    tar xvfz node_exporter-1.6.1.linux-amd64.tar.gz
+    cd node_exporter-1.6.1.linux-amd64/
+    mkdir /etc/prometheus
+    mkdir /etc/prometheus/node-exporter
+    cp ./* /etc/prometheus/node-exporter
+    chown -R prometheus:prometheus /etc/prometheus/node-exporter/
+    nano /etc/systemd/system/node-exporter.service
+
+[node-exporter.service](https://github.com/ZelinskiyAN/diplom/blob/main/img/node-exporter.service)
+
+    systemctl enable node-exporter
+    systemctl start node-exporter
+    systemctl status node-exporter
+
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/d3921773-90bd-408e-b0dd-4f883d8a50f9)
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/f910f6a5-1ffa-4432-a80e-6421dff1556a)
+
+
+
+
+
+
+
+
+
 
 
 
