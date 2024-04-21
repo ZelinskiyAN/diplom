@@ -177,3 +177,49 @@ Terraform outputs:
 
 [внешний IP адрес L7 балансировщика](http://158.160.152.157/)
 
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/4902bc26-3e01-4a75-a814-17aee211cf7f)
+
+---
+
+## Устройство мониторинга посредством Prometheus и Grafana.
+
+### Cтавим prometheus на ВМ prom_3
+
+Вводим команды:
+
+    ssh user@158.160.125.19 -i id_rsa
+    sudo -i
+    useradd --no-create-home --shell /bin/false prometheus
+    wget https://github.com/prometheus/prometheus/releases/download/v2.47.1/prometheus-2.47.1.linux-amd64.tar.gz
+    tar xvfz prometheus-2.47.1.linux-amd64.tar.gz
+    cd prometheus-2.47.1.linux-amd64/
+    mkdir /etc/prometheus
+    mkdir /var/lib/prometheus
+    cp ./prometheus promtool /usr/local/bin/
+    cp -R ./console_libraries /etc/prometheus
+    cp -R ./consoles /etc/prometheus
+    cp ./prometheus.yml /etc/prometheus
+    chown -R prometheus:prometheus /etc/prometheus /var/lib/prometheus
+    chown prometheus:prometheus /usr/local/bin/prometheus
+    chown prometheus:prometheus /usr/local/bin/promtool
+    nano /etc/systemd/system/prometheus.service
+
+[prometheus.service](https://github.com/ZelinskiyAN/diplom/blob/main/img/prometheus.service)
+
+    chown -R prometheus:prometheus /var/lib/prometheus
+    systemctl enable prometheus
+    sudo systemctl start prometheus
+    sudo systemctl status prometheus
+
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/84e5340c-ca98-4117-8c22-18fa488cba92)
+
+Правим конфиг [prometheus.yml](https://github.com/ZelinskiyAN/diplom/blob/main/img/prometheus.yml):
+
+    nano /etc/prometheus/prometheus.yml
+
+    systemctl restart prometheus
+    systemctl status prometheus
+
+
+
+
