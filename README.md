@@ -120,5 +120,5 @@ Cоздайте ВМ, разверните на ней Elasticsearch. Устан
 
 Создайте Application load balancer для распределения трафика на веб-сервера, созданные ранее. Укажите HTTP router, созданный ранее, задайте listener тип auto, порт 80.
 
-[main.tf] (https://github.com/ZelinskiyAN/diplom/blob/main/img/main.tf)
+[![main.tf]](https://github.com/ZelinskiyAN/diplom/blob/main/img/main.tf)
 
