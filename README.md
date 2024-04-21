@@ -124,6 +124,8 @@ _Создайте Application load balancer для распределения т
 
 Выполнив команду terraform apply создаем веб-сервера web_1 и web_2, а также остальные необходимые ресурсы на Ubuntu 22.04 LTS.
 
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/e09347f0-9342-4452-af4d-f593294ddd70)
+
 
 [external_ip_address_bast_7 = "178.154.220.115"](http://178.154.220.115)
 
@@ -163,7 +165,7 @@ _Создайте Application load balancer для распределения т
 
 Описываем [playbook.yaml](https://github.com/ZelinskiyAN/diplom/blob/main/img/nginx.rar)
 
-Вводим команды:
+Вводим команду:
 
     ansible-playbook -b /home/user/project/playbook.yaml
 
