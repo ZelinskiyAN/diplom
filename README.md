@@ -282,7 +282,7 @@ Terraform outputs:
 
 [Targets prometheus](http://158.160.121.254:9090/targets?search=)
 
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/1feb1645-e140-45cf-978d-a8702b1837a4)
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/c0bb3931-c311-45ae-92c4-00201ca47973)
 
 ### Cтавим grafana на ВМ graf_4
 
