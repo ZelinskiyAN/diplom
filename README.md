@@ -280,7 +280,7 @@ Terraform outputs:
 
 Переходим в интерфейс prometheus в браузере:
 
-[Targets prometheus](http://158.160.121.254:9090/targets?search=)
+[Targets prometheus](http://158.160.117.144:9090/targets?search=)
 
 ![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/c0bb3931-c311-45ae-92c4-00201ca47973)
 
