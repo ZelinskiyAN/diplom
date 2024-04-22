@@ -119,25 +119,25 @@ Cоздайте ВМ, разверните на ней Elasticsearch. Устан
 
 Выполнив команду terraform apply создаем веб-сервера web_1 и web_2, а также остальные необходимые ресурсы на Ubuntu 22.04 LTS.
 
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/e09347f0-9342-4452-af4d-f593294ddd70)
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/6131077b-04b9-40d3-bb4b-1277847e17ca)
 
 Terraform outputs:
 
-[external_ip_address_bast_7 = "178.154.220.115"](http://178.154.220.115)
+[external_ip_address_bast_7 = "158.160.35.177"](http://158.160.35.177)
 
-[external_ip_address_elas_5 = "51.250.13.221"](http://51.250.13.221)
+[external_ip_address_elas_5 = "158.160.32.203"](http://158.160.32.203)
 
-[external_ip_address_graf_4 = "84.201.132.243"](http://84.201.132.243)
+[external_ip_address_graf_4 = "62.84.119.194"](http://62.84.119.194)
 
-[external_ip_address_kib_6 = "51.250.65.29"](http://51.250.65.29)
+[external_ip_address_kib_6 = "51.250.89.129"](http://51.250.89.129)
 
 [external_ip_address_l7 = "158.160.152.157"](http://158.160.152.157)
 
-[external_ip_address_prom_3 = "158.160.121.254"](http://158.160.121.254)
+[external_ip_address_prom_3 = "158.160.117.144"](http://158.160.117.144)
 
-[external_ip_address_web_1 = "158.160.96.189"](http://158.160.96.189)
+[external_ip_address_web_1 = "158.160.56.154"](http://158.160.56.154)
 
-[external_ip_address_web_2 = "62.84.122.148"](http://62.84.122.148)
+[external_ip_address_web_2 = "158.160.31.64"](http://158.160.31.64)
 
 [internal_ip_address_bast_7 = "192.168.10.37"](http://192.168.10.37)
 
@@ -216,11 +216,9 @@ Terraform outputs:
 
 ![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/05034400-7c42-4ab9-8c6b-0b220060bf10)
 
-Переходим в интерфейс prometheus в браузере:
-
 ### Ставим node-exporter на web-сервера web_1 и web_2.
 
-Подключаемся к web-сервера по ssh и вводим команды:
+Подключаемся к web-серверам по ssh и вводим команды:
 
     sudo -i
     sudo useradd --no-create-home --shell /bin/false prometheus
@@ -245,7 +243,7 @@ Terraform outputs:
 
 ### Ставим prometheus-nginxlog-exporter web-сервера web_1 и web_2
 
-Подключаемся к web-сервера по ssh и вводим команды:
+Подключаемся к web-серверам по ssh и вводим команды:
 
     sudo -i
     wget https://github.com/martin-helmich/prometheus-nginxlog-exporter/releases/download/v1.9.2/prometheus-nginxlog-exporter_1.9.2_linux_amd64.deb
@@ -302,7 +300,7 @@ Terraform outputs:
 
 Переходим в интерфейс grafana в браузере:
 
-[Интерфейс grafana](http://84.201.132.243:3000/d/rYdddlPWk/grafana?orgId=1&refresh=1m&var-datasource=default&var-job=prometheus&var-node=192.168.10.33:9100&var-diskdevices=%5Ba-z%5D%2B%7Cnvme%5B0-9%5D%2Bn%5B0-9%5D%2B%7Cmmcblk%5B0-9%5D%2B)
+[Интерфейс grafana](http://62.84.119.194:3000/d/rYdddlPWk/grafana?orgId=1&refresh=1m&var-datasource=default&var-job=prometheus&var-node=192.168.10.33:9100&var-diskdevices=%5Ba-z%5D%2B%7Cnvme%5B0-9%5D%2Bn%5B0-9%5D%2B%7Cmmcblk%5B0-9%5D%2B)
 
 логин: admin
 
@@ -374,7 +372,7 @@ Cтавим Elasticsearch на ВМ elas_5
 
 В браузере вводим:
 
-[http://51.250.65.29:5601/app/dev_tools#/console](http://51.250.65.29:5601/app/dev_tools#/console)
+[http://51.250.89.129:5601/app/dev_tools#/console](http://51.250.89.129:5601/app/dev_tools#/console)
 
 Делаем запрос к Эластику:
 
@@ -409,7 +407,7 @@ GET /_cluster/health?pretty
 
 В браузере вводим:
 
-[http://51.250.65.29:5601/app/discover](http://51.250.65.29:5601/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-15m,to:now))&_a=(columns:!(),filters:!(),index:'46a44210-ff5f-11ee-88ed-857d018b60d6',interval:auto,query:(language:kuery,query:''),sort:!(!('@timestamp',desc))))
+[http://51.250.89.129:5601/app/discover](http://51.250.89.129:5601/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-15m,to:now))&_a=(columns:!(),filters:!(),index:'46a44210-ff5f-11ee-88ed-857d018b60d6',interval:auto,query:(language:kuery,query:''),sort:!(!('@timestamp',desc))))
 
 ![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/ed21b407-170c-4cda-ae02-1c53893e8d2e)
 
