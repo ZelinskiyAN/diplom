@@ -409,7 +409,7 @@ GET /_cluster/health?pretty
 
 [http://51.250.89.129:5601/app/discover](http://51.250.89.129:5601/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-15m,to:now))&_a=(columns:!(),filters:!(),index:'46a44210-ff5f-11ee-88ed-857d018b60d6',interval:auto,query:(language:kuery,query:''),sort:!(!('@timestamp',desc))))
 
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/ed21b407-170c-4cda-ae02-1c53893e8d2e)
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/1fb25332-9f8c-4137-bfae-962dfb9e776d)
 
 # Устройство Сети.
 
