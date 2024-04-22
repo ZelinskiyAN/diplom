@@ -179,7 +179,7 @@ Terraform outputs:
 
 Вводим команды:
 
-    ssh user@158.160.121.254
+    ssh user@158.160.117.144
     sudo -i
     useradd --no-create-home --shell /bin/false prometheus
     wget https://github.com/prometheus/prometheus/releases/download/v2.47.1/prometheus-2.47.1.linux-amd64.tar.gz
