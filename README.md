@@ -378,7 +378,7 @@ Cтавим Elasticsearch на ВМ elas_5
 
 GET /_cluster/health?pretty
 
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/29771303-fce9-4b06-a5de-a6e8d2e6cd7e)
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/d7ab0ced-152a-4b54-9f9b-30b190e5856a)
 
 ### Cтавим filebeat web-сервера web_1 и web_2
 
