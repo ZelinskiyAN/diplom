@@ -1,0 +1,6 @@
+---
+- name: Configure webserver with Elasticsearch
+  hosts: elastic
+  become: yes
+  roles:
+    - role: elasticsearch

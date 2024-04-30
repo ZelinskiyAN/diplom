@@ -1,0 +1,30 @@
+---
+- name: Configure webserver with Grafana 
+  hosts: grafana
+  become: true
+  roles:
+  - role: grafana
+
+- name: Configure webserver with Prometheus
+  hosts: prometheus
+  become: yes
+  roles:
+    - role: prometheus
+
+- name: Configure webserver with Elasticsearch
+  hosts: elastic
+  become: yes
+  roles:
+    - role: elasticsearch
+
+- name: Configure webserver with Kibana
+  hosts: kibana
+  become: yes
+  roles:
+    - role: kibana
+    
+- name: Configure webserver with nginx
+  hosts: nginx
+  become: yes
+  roles:
+    - role: nginx

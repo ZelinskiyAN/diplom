@@ -1,0 +1,41 @@
+[nginx]
+linux-web1 ansible_host=192.168.10.33
+linux-web2 ansible_host=192.168.20.12
+
+[prometheus]
+linux-prom3 ansible_host=192.168.10.5
+
+[grafana]
+linux-graf4 ansible_host=192.168.10.21
+
+[elastic]
+linux-elas5 ansible_host=192.168.10.6
+
+[kibana]
+linux-kib6 ansible_host=192.168.10.7
+
+[bastion]
+linux-bast7 ansible_host=51.250.14.236
+
+[nginx:vars]
+ansible_ssh_user=dmosk
+ansible_ssh_common_args='-o StrictHostKeyChecking=no -o ProxyCommand="ssh -W %h:%p -i /home/user/.ssh/id_rsa dmosk@51.250.14.236"'
+
+[prometheus:vars]
+ansible_ssh_user=dmosk
+ansible_ssh_common_args='-o StrictHostKeyChecking=no -o ProxyCommand="ssh -W %h:%p -i /home/user/.ssh/id_rsa dmosk@51.250.14.236"'
+
+[grafana:vars]
+ansible_ssh_user=dmosk
+ansible_ssh_common_args='-o StrictHostKeyChecking=no -o ProxyCommand="ssh -W %h:%p -i /home/user/.ssh/id_rsa dmosk@51.250.14.236"'
+
+[elastic:vars]
+ansible_ssh_user=dmosk
+ansible_ssh_common_args='-o StrictHostKeyChecking=no -o ProxyCommand="ssh -W %h:%p -i /home/user/.ssh/id_rsa dmosk@51.250.14.236"'
+
+[kibana:vars]
+ansible_ssh_user=dmosk
+ansible_ssh_common_args='-o StrictHostKeyChecking=no -o ProxyCommand="ssh -W %h:%p -i /home/user/.ssh/id_rsa dmosk@51.250.14.236"'
+
+[bastion:vars]
+ansible_ssh_user=dmosk

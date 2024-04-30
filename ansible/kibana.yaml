@@ -1,0 +1,6 @@
+---
+- name: Configure webserver with Kibana
+  hosts: kibana
+  become: yes
+  roles:
+    - role: kibana

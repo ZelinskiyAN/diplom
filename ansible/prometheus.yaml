@@ -1,0 +1,6 @@
+---
+- name: Configure webserver with Prometheus
+  hosts: prometheus
+  become: yes
+  roles:
+    - role: prometheus
