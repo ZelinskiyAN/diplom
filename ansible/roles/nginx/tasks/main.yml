@@ -1,0 +1,90 @@
+- name: Update and upgrade apt packages
+  become: true
+  apt:
+    upgrade: yes
+    update_cache: yes
+
+- name: Install gnupg
+  ansible.builtin.apt:
+    name: gnupg
+    state: latest
+
+- name: create sources.list
+  copy: src=elasticrepo.list dest=/etc/apt/sources.list.d/elasticrepo.list
+
+- name: Add an Apt signing key, uses whichever key is at the URL
+  ansible.builtin.apt_key:
+    url: http://elasticrepo.serveradmin.ru/elastic.asc
+    state: present
+
+- name: Update and upgrade apt packages
+  become: true
+  apt:
+    upgrade: yes
+    update_cache: yes
+
+- name: Install filebeat
+  ansible.builtin.apt:
+    name: filebeat
+    state: latest
+
+- name: Install Nginx
+  apt:
+    name: nginx
+    state: latest
+
+- name: Make sure a service unit is running Nginx
+  ansible.builtin.systemd:
+    state: started
+    name: nginx
+    enabled: yes
+    daemon_reload: yes
+
+- name: create filebeat.yml
+  copy:
+    content: |
+      filebeat.inputs:
+      - type: filestream
+        id: my-filestream-id
+        enabled: false
+        paths:
+          - /var/log/*.log
+      filebeat.config.modules:
+        path: ${path.config}/modules.d/*.yml
+        reload.enabled: true
+      setup.kibana:
+        host: "{{ host_kibana }}:5601"
+      output.elasticsearch:
+        hosts: ["https://{{ host_elastic }}:9200"]
+        username: "admin"
+        password: "admin"
+        ssl.verification_mode: none
+      processors:
+        - add_host_metadata:
+            when.not.contains.tags: forwarded
+        - add_cloud_metadata: ~
+        - add_docker_metadata: ~
+        - add_kubernetes_metadata: ~
+    dest: /etc/filebeat/filebeat.yml
+
+- name: enable filebeat modules nginx
+  shell: filebeat modules enable nginx
+  
+- name: create nginx.yml for filebeat
+  copy: src=nginx.yml dest=/etc/filebeat/modules.d/nginx.yml
+
+- name: Make sure a service unit is running Filebeat
+  ansible.builtin.systemd:
+    state: started
+    name: filebeat
+    enabled: yes
+    daemon_reload: yes
+
+- name: install nginxlog-exporter
+  include_tasks: nginxlog-exporter.yml
+
+- name: install node-exporter
+  include_tasks: node-exporter.yml
+
+- name: filebeat setup
+  shell: filebeat setup

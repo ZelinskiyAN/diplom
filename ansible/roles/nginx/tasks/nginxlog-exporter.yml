@@ -1,0 +1,27 @@
+- name: create nginx.app
+  copy: src=nginx dest=/etc/nginx/sites-enabled/nginx
+
+- name: create nginx.conf
+  copy: src=nginx.conf dest=/etc/nginx/nginx.conf
+
+- name: Download NginxLog Exporter
+  get_url: 
+    url: https://github.com/martin-helmich/prometheus-nginxlog-exporter/releases/download/v1.9.2/prometheus-nginxlog-exporter_1.9.2_linux_amd64.deb
+    dest: /home/dmosk/
+    mode: '0440'
+
+- name: install nginxlog
+  shell: apt install /home/dmosk/prometheus-nginxlog-exporter_1.9.2_linux_amd64.deb
+
+- name: create nginx.log.exporter
+  copy: src=prometheus-nginxlog-exporter.hcl dest=/etc/prometheus-nginxlog-exporter.hcl
+
+- name: Restart service httpd, in all cases
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
+
+- name: Make sure a service unit is running nginxlog-exporter
+  ansible.builtin.systemd:
+    state: restarted
+    name: prometheus-nginxlog-exporter

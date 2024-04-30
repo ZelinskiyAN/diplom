@@ -1,0 +1,61 @@
+- name: Ensure group "somegroup" exists
+  ansible.builtin.group:
+    name: prometheus
+    state: present
+
+- name: adduser Prometheus
+  user:
+    name: prometheus
+    groups: prometheus
+    shell: /bin/false
+
+- name: Download Node Exporter
+  get_url: 
+    url: https://github.com/prometheus/node_exporter/releases/download/v1.5.0/node_exporter-1.5.0.linux-amd64.tar.gz
+    dest: /home/dmosk/
+    mode: '0440'
+
+- name: Ecstrack archive
+  ansible.builtin.unarchive:
+    src: /home/dmosk/node_exporter-1.5.0.linux-amd64.tar.gz
+    dest: /home/dmosk/
+    remote_src: yes
+    
+- name: create dir
+  file:
+    path: '{{item}}'
+    state: directory
+    owner: prometheus
+    group: prometheus
+    mode: u+rwx,g-wx,o-rwx
+  loop: 
+    - '/etc/prometheus'
+    - '/etc/prometheus/node_exporter'
+    - '/opt/nginx-exporter'
+
+- name: Copy Files
+  copy:
+    src: "{{item}}"
+    dest: /etc/prometheus/node-exporter
+    directory_mode: recursive
+    remote_src: yes
+    mode: u+rwx,g-wx,o-rwx
+  loop:
+    - '/home/dmosk/node_exporter-1.5.0.linux-amd64/'
+
+- name: Recursively change ownership of a directory
+  file:
+    path: /etc/prometheus/node-exporter/
+    owner: prometheus
+    group: prometheus
+    mode: u+rwx,g-wx,o-rwx
+
+- name: create node-exporter.service
+  copy: src=node-exporter.service dest=/etc/systemd/system/node-exporter.service owner=prometheus group=prometheus
+
+- name: Make sure a service unit is running Prometheus
+  ansible.builtin.systemd:
+    state: started
+    name: node-exporter
+    enabled: yes
+    daemon_reload: yes
