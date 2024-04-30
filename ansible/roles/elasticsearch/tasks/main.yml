@@ -1,1 +1,34 @@
+- name: Update and upgrade apt packages
+  become: true
+  apt:
+    upgrade: yes
+    update_cache: yes
 
+- name: Install gnupg
+  ansible.builtin.apt:
+    name: gnupg
+    state: latest
+
+- name: create sources.list
+  copy: src=elasticrepo.list dest=/etc/apt/sources.list.d/elasticrepo.list
+
+- name: Add an Apt signing key, uses whichever key is at the URL
+  ansible.builtin.apt_key:
+    url: http://elasticrepo.serveradmin.ru/elastic.asc
+    state: present
+
+- name: Run the equivalent of "apt-get update" as a separate step
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Install elasticsearch
+  shell: apt install elasticsearch
+
+- name: create elasticsearch.yml file
+  copy: src=elasticsearch.yml dest=/etc/elasticsearch/elasticsearch.yml
+
+- name: Make sure a service unit is running elasticsearch
+  ansible.builtin.systemd:
+    state: started
+    name: elasticsearch
+    enabled: yes
