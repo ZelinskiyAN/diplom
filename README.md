@@ -117,7 +117,7 @@ Cоздайте ВМ, разверните на ней Elasticsearch. Устан
 
 [main.tf](https://github.com/ZelinskiyAN/diplom/blob/main/img/main.tf)
 
-Выполнив команду terraform apply создаем веб-сервера web_1 и web_2, а также остальные необходимые ресурсы на Ubuntu 22.04 LTS.
+Выполнив команду terraform apply создаем веб-сервера web1 и web2, а также остальные необходимые ресурсы на Ubuntu 22.04 LTS.
 
 ![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/896f6fe4-f594-4e5a-8b82-39f9cdbef853)
 
