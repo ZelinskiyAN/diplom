@@ -119,365 +119,83 @@ Cоздайте ВМ, разверните на ней Elasticsearch. Устан
 
 Выполнив команду terraform apply создаем веб-сервера web_1 и web_2, а также остальные необходимые ресурсы на Ubuntu 22.04 LTS.
 
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/6131077b-04b9-40d3-bb4b-1277847e17ca)
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/896f6fe4-f594-4e5a-8b82-39f9cdbef853)
 
-Terraform outputs:
+Target Group
 
-[external_ip_address_bast_7 = "158.160.35.177"](http://158.160.35.177)
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/2ccb3bc9-f983-421e-8914-45c81d91ffd7)
 
-[external_ip_address_elas_5 = "158.160.32.203"](http://158.160.32.203)
+Backend Group
 
-[external_ip_address_graf_4 = "62.84.119.194"](http://62.84.119.194)
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/04eb0450-1500-47d2-ba12-5c4b06ba15f6)
 
-[external_ip_address_kib_6 = "51.250.89.129"](http://51.250.89.129)
 
-[external_ip_address_l7 = "158.160.152.157"](http://158.160.152.157)
+Устанавливаю ansible на терминал и накатываю с помощью него необходимые ресурсы.
 
-[external_ip_address_prom_3 = "158.160.117.144"](http://158.160.117.144)
+[Prometius](http://51.250.82.192:9090)
 
-[external_ip_address_web_1 = "158.160.56.154"](http://158.160.56.154)
+[Grafana](http://158.160.105.168:3000)
 
-[external_ip_address_web_2 = "158.160.31.64"](http://158.160.31.64)
-
-[internal_ip_address_bast_7 = "192.168.10.37"](http://192.168.10.37)
-
-[internal_ip_address_elas_5 = "192.168.10.6"](http://192.168.10.6)
-
-[internal_ip_address_graf_4 = "192.168.10.21"](http://192.168.10.21)
-
-[internal_ip_address_kib_6 = "192.168.10.7"](http://192.168.10.7)
-
-[internal_ip_address_prom_3 = "192.168.10.5"](http://192.168.10.5)
-
-[internal_ip_address_web_1 = "192.168.10.33"](http://192.168.10.33)
-
-[internal_ip_address_web_2 = "192.168.20.12"](http://192.168.20.12)
-
-Устанавливаю ansible на терминал и накатываю с помощью него nginx на web-сервера.
-
-Создаем конфигурационный файл [ansible.cfg](https://github.com/ZelinskiyAN/diplom/blob/main/img/ansible.cfg)
-
-Описываем окружение в файле [hosts.txt](https://github.com/ZelinskiyAN/diplom/blob/main/img/hosts.txt)
-
-Описываем [playbook.yaml](https://github.com/ZelinskiyAN/diplom/blob/main/img/nginx.rar)
-
-Вводим команду:
-
-    ansible-playbook -b /home/user/project/playbook.yaml
-
-Проверяем сайт:
-
-[внешний IP адрес L7 балансировщика](http://158.160.152.157/)
-
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/4902bc26-3e01-4a75-a814-17aee211cf7f)
+[Elasticsearch](http://158.160.119.143:5601)
 
 ---
 
 ## Устройство мониторинга посредством Prometheus и Grafana.
 
-### Cтавим prometheus на ВМ prom_3
+[Targets prometheus](http://51.250.82.192:9090/targets?search=)
 
-Вводим команды:
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/275f7da1-d4e1-47cc-a954-c3c1b6a15ec1)
 
-    ssh user@158.160.117.144
-    sudo -i
-    useradd --no-create-home --shell /bin/false prometheus
-    wget https://github.com/prometheus/prometheus/releases/download/v2.47.1/prometheus-2.47.1.linux-amd64.tar.gz
-    tar xvfz prometheus-2.47.1.linux-amd64.tar.gz
-    cd prometheus-2.47.1.linux-amd64/
-    mkdir /etc/prometheus
-    mkdir /var/lib/prometheus
-    cp ./prometheus promtool /usr/local/bin/
-    cp -R ./console_libraries /etc/prometheus
-    cp -R ./consoles /etc/prometheus
-    cp ./prometheus.yml /etc/prometheus
-    chown -R prometheus:prometheus /etc/prometheus /var/lib/prometheus
-    chown prometheus:prometheus /usr/local/bin/prometheus
-    chown prometheus:prometheus /usr/local/bin/promtool
-    nano /etc/systemd/system/prometheus.service
 
-[prometheus.service](https://github.com/ZelinskiyAN/diplom/blob/main/img/prometheus.service)
 
-    chown -R prometheus:prometheus /var/lib/prometheus
-    systemctl enable prometheus
-    sudo systemctl start prometheus
-    sudo systemctl status prometheus
+[Интерфейс grafana](http://158.160.105.168:3000/d/rYdddlPWk/node-exporter-full?orgId=1&refresh=1m&var-datasource=default&var-job=prometheus&var-node=192.168.10.33:9100&var-diskdevices=%5Ba-z%5D%2B%7Cnvme%5B0-9%5D%2Bn%5B0-9%5D%2B%7Cmmcblk%5B0-9%5D%2B)
 
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/84e5340c-ca98-4117-8c22-18fa488cba92)
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/0647009d-ba0f-4be0-9daa-307d3292ea51)
 
-Правим конфиг prometheus.yml:
+# Устройство логирования посредством elasticsearch
 
-    nano /etc/prometheus/prometheus.yml
+[Elastic](http://158.160.119.143:5601/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-15m,to:now))&_a=(columns:!(),filters:!(),index:'46a44210-ff5f-11ee-88ed-857d018b60d6',interval:auto,query:(language:kuery,query:''),sort:!(!('@timestamp',desc))))
 
-[prometheus.yml](https://github.com/ZelinskiyAN/diplom/blob/main/img/prometheus.yml)
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/e9766c21-aec1-4a1d-b8e5-55d8a1939620)
 
-    systemctl restart prometheus
-    systemctl status prometheus
 
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/05034400-7c42-4ab9-8c6b-0b220060bf10)
-
-### Ставим node-exporter на web-сервера web_1 и web_2.
-
-Подключаемся к web-серверам по ssh и вводим команды:
-
-    sudo -i
-    sudo useradd --no-create-home --shell /bin/false prometheus
-    wget https://github.com/prometheus/node_exporter/releases/download/v1.6.1/node_exporter-1.6.1.linux-amd64.tar.gz
-    tar xvfz node_exporter-1.6.1.linux-amd64.tar.gz
-    cd node_exporter-1.6.1.linux-amd64/
-    mkdir /etc/prometheus
-    mkdir /etc/prometheus/node-exporter
-    cp ./* /etc/prometheus/node-exporter
-    chown -R prometheus:prometheus /etc/prometheus/node-exporter/
-    nano /etc/systemd/system/node-exporter.service
-
-[node-exporter.service](https://github.com/ZelinskiyAN/diplom/blob/main/img/node-exporter.service)
-
-    systemctl enable node-exporter
-    systemctl start node-exporter
-    systemctl status node-exporter
-
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/d3921773-90bd-408e-b0dd-4f883d8a50f9)
-
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/f910f6a5-1ffa-4432-a80e-6421dff1556a)
-
-### Ставим prometheus-nginxlog-exporter web-сервера web_1 и web_2
-
-Подключаемся к web-серверам по ssh и вводим команды:
-
-    sudo -i
-    wget https://github.com/martin-helmich/prometheus-nginxlog-exporter/releases/download/v1.9.2/prometheus-nginxlog-exporter_1.9.2_linux_amd64.deb
-    apt install ./prometheus-nginxlog-exporter_1.9.2_linux_amd64.deb
-    wget -O /etc/systemd/system/prometheus-nginxlog-exporter.service https://raw.githubusercontent.com/martin-helmich/prometheus-nginxlog-exporter/master/res/package/prometheus-nginxlog-exporter.service
-    nano /etc/systemd/system/prometheus-nginxlog-exporter.service
-
-[prometheus-nginxlog-exporter.service](https://github.com/ZelinskiyAN/diplom/blob/main/img/prometheus-nginxlog-exporter.service)
-
-Правим конфиг nginx.conf:
-
-    nano /etc/nginx/nginx.conf
-
-[nginx.conf](https://github.com/ZelinskiyAN/diplom/blob/main/img/nginx.conf)
-
-Правим конфиг myapp.conf:
-
-    rm -rf /etc/nginx/sites-enabled/default
-    nano /etc/nginx/conf.d/myapp.conf
-
-[myapp.conf](https://github.com/ZelinskiyAN/diplom/blob/main/img/myapp.conf)
-
-    systemctl restart nginx
-    systemctl status nginx
-
-    systemctl daemon-reload
-    chown -R prometheus:prometheus /var/log/nginx/access.log
-    systemctl restart prometheus-nginxlog-exporter
-    systemctl status prometheus-nginxlog-exporter
-
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/9b78b41d-719a-405a-b48f-e5ea7271219e)
-
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/c91c52b1-f6d1-4bdc-9e82-0aacfc29ab11)
-
-Переходим в интерфейс prometheus в браузере:
-
-[Targets prometheus](http://158.160.117.144:9090/targets?search=)
-
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/c0bb3931-c311-45ae-92c4-00201ca47973)
-
-### Cтавим grafana на ВМ graf_4
-
-Подключаемся по ssh и вводим команды:
-
-    sudo -i
-    apt-get install -y adduser libfontconfig1 musl
-    wget https://dl.grafana.com/oss/release/grafana_10.1.5_amd64.deb
-    dpkg -i grafana_10.1.5_amd64.deb
-    systemctl enable grafana-server
-    systemctl start grafana-server
-    systemctl status grafana-server
-
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/98fa835a-bc4a-48ba-8153-8ce020db0805)
-
-Переходим в интерфейс grafana в браузере:
-
-[Интерфейс grafana](http://62.84.119.194:3000/d/rYdddlPWk/grafana?orgId=1&refresh=1m&var-datasource=default&var-job=prometheus&var-node=192.168.10.33:9100&var-diskdevices=%5Ba-z%5D%2B%7Cnvme%5B0-9%5D%2Bn%5B0-9%5D%2B%7Cmmcblk%5B0-9%5D%2B)
-
-логин: admin
-
-пароль: admin
-
-Настраиваем привязку ресурсов и дашборды в grafana.
-
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/bd92d87f-2747-4468-a67e-7b2dc13bddcf)
-
-## Устройство логирования посредством elasticsearch, kibana, filebeat.
-
-### Логи
-
-Cтавим Elasticsearch на ВМ elas_5
-
-Подключаемся по ssh и вводим команды:
-
-    sudo -i
-    apt update && apt install gnupg apt-transport-https
-    wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
-    echo "deb [trusted=yes] https://mirror.yandex.ru/mirrors/elastic/7/ stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list
-    apt update && apt-get install elasticsearch
-    systemctl daemon-reload
-    systemctl enable elasticsearch.service
-    systemctl start elasticsearch.service
-    systemctl status elasticsearch.service
-
-Правим конфиг elasticsearch.yml:
-
-    nano /etc/elasticsearch/elasticsearch.yml
-
-[elasticsearch.yml](https://github.com/ZelinskiyAN/diplom/blob/main/img/elasticsearch.yml)
-
-    systemctl restart elasticsearch.service
-    systemctl status elasticsearch.service
-
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/043e9e66-e5bb-416f-9921-afb42fb4f794)
-
-    curl 'localhost:9200/_cluster/health?pretty'
-
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/fb51604c-3198-4fba-9b86-4afc6de7f58a)
-
-### Cтавим kibana на ВМ kib_6
-
-Подключаемся по ssh и вводим команды:
-
-    sudo -i
-    apt update && apt install gnupg apt-transport-https
-    wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
-    echo "deb [trusted=yes] https://mirror.yandex.ru/mirrors/elastic/7/ stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list
-    apt update && apt-get install kibana
-    systemctl daemon-reload
-    systemctl enable kibana.service
-    systemctl start kibana.service
-    systemctl status kibana.service
-
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/185959a4-1119-4ff5-9b7e-4a17e259718b)
-
-Правим конфиг kibana.yml:
-
-    nano /etc/kibana/kibana.yml
-
-[kibana.yml](https://github.com/ZelinskiyAN/diplom/blob/main/img/kibana.yml)
-
-    systemctl restart kibana.service
-    systemctl status kibana.service
-
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/b9050f4f-e936-48c6-b15f-5cd8a9653c40)
-
-В браузере вводим:
-
-[http://51.250.89.129:5601/app/dev_tools#/console](http://51.250.89.129:5601/app/dev_tools#/console)
-
-Делаем запрос к Эластику:
-
-GET /_cluster/health?pretty
-
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/d7ab0ced-152a-4b54-9f9b-30b190e5856a)
-
-### Cтавим filebeat web-сервера web_1 и web_2
-
-Подключаемся к web-сервера по ssh и вводим команды:
-
-    sudo -i
-    apt update && apt install gnupg apt-transport-https
-    wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
-    echo "deb [trusted=yes] https://mirror.yandex.ru/mirrors/elastic/7/ stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list
-    apt update && apt-get install filebeat
-    systemctl daemon-reload
-    systemctl enable filebeat.service
-    systemctl start filebeat.service
-    systemctl status filebeat.service
-
-Правим конфиг filebeat.yml:
-
-[filebeat.yml](https://github.com/ZelinskiyAN/diplom/blob/main/img/filebeat.yml)
-
-    systemctl restart filebeat.service
-    systemctl status filebeat.service
-
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/6b2e1e04-dff2-4c11-aacd-06faf3c8af51)
-
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/9ff1d2c3-1365-4b3d-860d-4120c486e49d)
-
-В браузере вводим:
-
-[http://51.250.89.129:5601/app/discover](http://51.250.89.129:5601/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-15m,to:now))&_a=(columns:!(),filters:!(),index:'46a44210-ff5f-11ee-88ed-857d018b60d6',interval:auto,query:(language:kuery,query:''),sort:!(!('@timestamp',desc))))
-
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/1fb25332-9f8c-4137-bfae-962dfb9e776d)
 
 # Устройство Сети.
 
-Настраиваем в Yandex.Cloud правила групп безопасности
-
 ## SSH security group
-
-группа для бастион-хоста
-
-Назначена ВМ - bast_7.
 
 Правила входящего трафика:
 
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/8a72ca62-d24e-4f9c-848c-91f6f7839085)
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/efffba2c-da66-4fd6-ab6f-9c0e6530dda1)
 
 Правила исходящего трафика:
 
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/2a5af72a-1a3d-4ef0-be28-fd430bec9e43)
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/496f9edf-3f43-4831-94cb-ba9cd19717dc)
+
 
 
 ## Open security group
 
-группа для доступа извне к Grafana, Kibana, application load balancer по 80 порту.
-
-Назначена для ВМ:
-
-graf_4;
-
-kib_6;
-
-Application Load Balancer.
-
 Правила входящего трафика:
 
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/8a06c51a-4fdf-48d8-8ff8-11f4a3e0c545)
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/afdac975-5dd1-48b9-bc00-ac213b0a900d)
 
 Правила исходящего трафика:
 
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/9f556d2c-acdd-4805-8c43-352d5aae31d6)
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/a287bfe1-2e41-4368-ad9e-c3c44ff5a2aa)
+
 
 ## Private security group
 
-группа для скрытия Web, Prometheus, application load balancer.
-
-Назначена для ВМ:
-
-web_1;
-
-web_2;
-
-prom_3;
-
-elas_5.
-
-Правила входящего трафика:
-
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/f22c4f36-6f17-4e93-9f3c-9909869060e9)
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/67718ca3-491d-4df3-be0f-4dcf7b1781a2)
 
 Правила исходящего трафика:
 
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/4a98ccff-8098-49df-9d03-c77cd922f41c)
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/e75c7b73-0b6e-4ab9-a887-e26694892f03)
 
 # Устройство резервного копирования.
 
-## Настраиваем в Yandex.Cloud правила резервного копирования
-
-![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/8685a1bb-3e54-4b46-8560-81b6bf6acc9b)
-
+![image](https://github.com/ZelinskiyAN/diplom/assets/149052655/03fbb549-e4ea-43ee-86f0-f908bcb3108a)
 
 
 
