@@ -1,0 +1,109 @@
+- name: Ensure group "somegroup" exists
+  ansible.builtin.group:
+    name: prometheus
+    state: present
+
+- name: adduser Prometheus
+  user:
+    name: prometheus
+    groups: prometheus
+    shell: /bin/false
+
+- name: Download Prometheus GitHub
+  get_url: 
+    url: https://github.com/prometheus/prometheus/releases/download/v2.40.1/prometheus-2.40.1.linux-amd64.tar.gz
+    dest: /home/dmosk/
+    mode: '0440'
+
+- name: Ecstrack archive
+  ansible.builtin.unarchive:
+    src: /home/dmosk/prometheus-2.40.1.linux-amd64.tar.gz
+    dest: /home/dmosk
+    remote_src: yes
+
+- name: Create Directory
+  file:
+    path: '{{item}}'
+    state: directory
+    owner: prometheus
+    group: prometheus
+    mode: u+rwx,g-wx,o-rwx
+  loop: 
+      - '/etc/prometheus'
+      - '/var/lib/prometheus'
+
+- name: Copy Files Prometheus
+  copy:
+    src: "{{item}}"
+    dest: /usr/local/bin/
+    remote_src: yes
+  loop:
+    - '/home/dmosk/prometheus-2.40.1.linux-amd64/prometheus'
+    - '/home/dmosk/prometheus-2.40.1.linux-amd64/promtool'
+
+- name: Copy Files
+  copy:
+    src: "{{item}}"
+    dest: /etc/prometheus
+    directory_mode: recursive
+    remote_src: yes
+  loop:
+    - '/home/dmosk/prometheus-2.40.1.linux-amd64/console_libraries'
+    - '/home/dmosk/prometheus-2.40.1.linux-amd64/consoles'
+
+- name: Recursively change ownership of a directory
+  file:
+    path: "{{item}}"
+    owner: prometheus
+    group: prometheus
+    mode: u+rwx,g-wx,o-rwx
+  loop:
+    - '/var/lib/prometheus'
+    - '/usr/local/bin/prometheus'
+    - '/usr/local/bin/promtool'
+    
+- name: create prometheus.service file
+  copy: src=prometheus.service dest=/etc/systemd/system/prometheus.service owner=prometheus group=prometheus
+
+- name: Recursively change ownership of a directory
+  file:
+    path: "{{item}}"
+    owner: prometheus
+    group: prometheus
+    mode: u+rwx,g-wx,o-rwx
+  loop:
+    - '/var/lib/prometheus'
+    - '/usr/local/bin/prometheus'
+    - '/usr/local/bin/promtool'
+    - '/var/lib/prometheus'
+
+- name: create prometheus.yml
+  copy:
+    content: |
+      # my global config
+      global:
+        scrape_interval: 15s 
+        evaluation_interval: 15s
+      alerting:
+        alertmanagers:
+          - static_configs:
+              - targets: ['192.168.10.33:9113', '192.168.20.12:9113']
+      rule_files:
+      scrape_configs:
+        - job_name: "prometheus"
+          static_configs:
+            - targets: ['localhost:9090']
+        - job_name: "host"
+          static_configs:
+            - targets: ['192.168.10.33:4040', '192.168.20.12:4040']
+        - job_name: "node"
+          static_configs:
+            - targets: ['192.168.10.33:9100', '192.168.20.12:9100']
+    dest: /etc/prometheus/prometheus.yml       
+
+- name: Make sure a service unit is running Prometheus
+  ansible.builtin.systemd:
+    state: started
+    name: prometheus
+    enabled: yes
+    daemon_reload: yes
